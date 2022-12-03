@@ -2,12 +2,18 @@ import { StyleSheet, Text, View, Switch, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import { Feather } from "@expo/vector-icons";
+import { postfix } from "./postfix_notation";
 
 const Calculator = () => {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   const [InputNum, setInpuNum] = useState("");
+
+  const Calculate = (f) => {
+    const result = postfix(f);
+    setInpuNum(result);
+  };
 
   return (
     <LinearGradient
@@ -26,17 +32,18 @@ const Calculator = () => {
         <Text
           style={{
             ...styles.formText,
-            fontSize: 50,
+            fontSize: 30,
             color: "#a5aead",
             fontWeight: "800",
             marginTop: 10,
           }}
+          numberOfLines={1}
         >
-          = 100
+          {InputNum}
         </Text>
       </View>
       <View style={styles.body}>
-        <View style={styles.themeSwitch}>
+        <View style={{ ...styles.themeSwitch, marginLeft: 20 }}>
           <Switch
             trackColor={{ false: "#767577", true: "#767577" }}
             thumbColor={"#f4f3f4"}
@@ -47,10 +54,8 @@ const Calculator = () => {
           />
           <Text style={{ color: "#747879" }}>SWITCH TO LIGHT THEME</Text>
         </View>
-        <View style={styles.btnArea}>
-          <View
-            style={{ ...styles.numberbtn, marginLeft: 20, marginBottom: 20 }}
-          >
+        <View style={{ ...styles.btnArea }}>
+          <View style={{ ...styles.numberbtn }}>
             <View style={{ flex: 1, flexDirection: "row" }}>
               <TouchableOpacity
                 style={{
@@ -58,6 +63,7 @@ const Calculator = () => {
                   flex: 1,
                   backgroundColor: "#fab82a",
                 }}
+                onPress={() => setInpuNum("")}
               >
                 <Text
                   style={{ color: "white", fontSize: 25, fontWeight: "700" }}
@@ -71,6 +77,7 @@ const Calculator = () => {
                   flex: 1,
                   backgroundColor: "#4f473e",
                 }}
+                onPress={() => setInpuNum(InputNum + "(")}
               >
                 <Text style={{ color: "#a88e67", fontSize: 20 }}>(</Text>
               </TouchableOpacity>
@@ -80,6 +87,7 @@ const Calculator = () => {
                   flex: 1,
                   backgroundColor: "#4f473e",
                 }}
+                onPress={() => setInpuNum(InputNum + ")")}
               >
                 <Text style={{ color: "#a88e67", fontSize: 20 }}>)</Text>
               </TouchableOpacity>
@@ -118,6 +126,7 @@ const Calculator = () => {
                 style={{
                   ...styles.numbtn,
                 }}
+                onPress={() => setInpuNum(InputNum + "7")}
               >
                 <Text style={{ ...styles.numtext }}>7</Text>
               </TouchableOpacity>
@@ -125,6 +134,7 @@ const Calculator = () => {
                 style={{
                   ...styles.numbtn,
                 }}
+                onPress={() => setInpuNum(InputNum + "8")}
               >
                 <Text style={{ ...styles.numtext }}>8</Text>
               </TouchableOpacity>
@@ -132,6 +142,7 @@ const Calculator = () => {
                 style={{
                   ...styles.numbtn,
                 }}
+                onPress={() => setInpuNum(InputNum + "9")}
               >
                 <Text style={{ ...styles.numtext }}>9</Text>
               </TouchableOpacity>
@@ -141,6 +152,7 @@ const Calculator = () => {
                 style={{
                   ...styles.numbtn,
                 }}
+                onPress={() => setInpuNum(InputNum + "4")}
               >
                 <Text style={{ ...styles.numtext }}>4</Text>
               </TouchableOpacity>
@@ -148,6 +160,7 @@ const Calculator = () => {
                 style={{
                   ...styles.numbtn,
                 }}
+                onPress={() => setInpuNum(InputNum + "5")}
               >
                 <Text style={{ ...styles.numtext }}>5</Text>
               </TouchableOpacity>
@@ -155,6 +168,7 @@ const Calculator = () => {
                 style={{
                   ...styles.numbtn,
                 }}
+                onPress={() => setInpuNum(InputNum + "6")}
               >
                 <Text style={{ ...styles.numtext }}>6</Text>
               </TouchableOpacity>
@@ -164,6 +178,7 @@ const Calculator = () => {
                 style={{
                   ...styles.numbtn,
                 }}
+                onPress={() => setInpuNum(InputNum + "1")}
               >
                 <Text style={{ ...styles.numtext }}>1</Text>
               </TouchableOpacity>
@@ -171,6 +186,7 @@ const Calculator = () => {
                 style={{
                   ...styles.numbtn,
                 }}
+                onPress={() => setInpuNum(InputNum + "2")}
               >
                 <Text style={{ ...styles.numtext }}>2</Text>
               </TouchableOpacity>
@@ -178,6 +194,7 @@ const Calculator = () => {
                 style={{
                   ...styles.numbtn,
                 }}
+                onPress={() => setInpuNum(InputNum + "3")}
               >
                 <Text style={{ ...styles.numtext }}>3</Text>
               </TouchableOpacity>
@@ -187,6 +204,7 @@ const Calculator = () => {
                 style={{
                   ...styles.numbtn,
                 }}
+                onPress={() => setInpuNum(InputNum + ".")}
               >
                 <Text style={{ ...styles.numtext }}>.</Text>
               </TouchableOpacity>
@@ -194,6 +212,7 @@ const Calculator = () => {
                 style={{
                   ...styles.numbtn,
                 }}
+                onPress={() => setInpuNum(InputNum + "0")}
               >
                 <Text style={{ ...styles.numtext }}>0</Text>
               </TouchableOpacity>
@@ -202,26 +221,40 @@ const Calculator = () => {
                   ...styles.numbtn,
                   backgroundColor: "#2b2c30",
                 }}
+                onPress={() => setInpuNum(InputNum.slice(0, -1))}
               >
                 <Feather name="delete" size={24} color="#49494b" />
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{ ...styles.keybtn, marginRight: 20, marginBottom: 20 }}>
-            <TouchableOpacity style={{ ...styles.keyArea }}>
+          <View style={{ ...styles.keybtn }}>
+            <TouchableOpacity
+              style={{ ...styles.keyArea }}
+              onPress={() => setInpuNum(InputNum + "×")}
+            >
               <Text style={styles.btnstyle}>×</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ ...styles.keyArea }}>
+            <TouchableOpacity
+              style={{ ...styles.keyArea }}
+              onPress={() => setInpuNum(InputNum + "÷")}
+            >
               <Text style={styles.btnstyle}>÷</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ ...styles.keyArea }}>
+            <TouchableOpacity
+              style={{ ...styles.keyArea }}
+              onPress={() => setInpuNum(InputNum + "-")}
+            >
               <Text style={styles.btnstyle}>－</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={{ ...styles.keyArea }}>
+            <TouchableOpacity
+              style={{ ...styles.keyArea }}
+              onPress={() => setInpuNum(InputNum + "+")}
+            >
               <Text style={styles.btnstyle}>＋</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{ ...styles.keyArea, flex: 2, backgroundColor: "#7d33e5" }}
+              onPress={() => Calculate(InputNum)}
             >
               <Text
                 style={{ ...styles.btnstyle, color: "white", fontSize: 50 }}
@@ -263,6 +296,8 @@ const styles = StyleSheet.create({
   btnArea: {
     flex: 6,
     flexDirection: "row",
+    marginHorizontal: 15,
+    marginBottom: 20,
   },
   numberbtn: {
     flex: 3,
@@ -276,7 +311,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#4a355e",
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: 40,
+    borderRadius: 20,
     marginVertical: 5,
     marginHorizontal: 5,
     elevation: 20,
