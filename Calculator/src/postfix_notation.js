@@ -112,15 +112,15 @@ export function countbracket(text) {
   let count_b = 0;
   let pos_1 = text.indexOf("(");
   let pos_2 = text.indexOf(")");
-  while (pos_1 !== -1 || pos_2 !== -1) {
-    if (pos_1 !== -1) {
-      count_a++;
-    }
-    if (pos_2 !== -1) {
-      count_b++;
-    }
+  while (pos_1 !== -1) {
+    count_a++;
     pos_1 = text.indexOf("(", pos_1 + 1);
+  }
+  while (pos_2 !== -1) {
+    count_b++;
     pos_2 = text.indexOf(")", pos_2 + 1);
   }
-  return count_b === count_a;
+  return count_b === count_b;
 }
+
+countbracket("(4+5)");

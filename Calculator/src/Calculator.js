@@ -28,13 +28,11 @@ const Calculator = () => {
   };
 
   const Calculate = (f) => {
-    if (!InputNum === "" && countbracket(f)) {
-      const result = postfix(f);
-      setInpuNum(result);
-    } else if (InputNum === "") {
-    } else {
-      showerrorToast();
+    if (!countbracket(f) || InputNum === "") {
+      return;
     }
+    const result = postfix(f);
+    setInpuNum(result);
   };
 
   return (
