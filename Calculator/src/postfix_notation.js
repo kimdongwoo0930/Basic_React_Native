@@ -64,12 +64,30 @@ export function postfix(f) {
     convert.push(stack.pop());
   }
 
-  let result = "";
   for (let i in convert) {
-    result += convert[i];
-    result += " ";
+    // 숫자인 경우 stack에 push합니다.
+    if (!isNaN(convert[i])) {
+      stack.push(convert[i]);
+    } else {
+      const b = parseFloat(stack.pop());
+      const a = parseFloat(stack.pop());
+      switch (convert[i]) {
+        case "+":
+          stack.push(a + b);
+          break;
+        case "-":
+          stack.push(a - b);
+          break;
+        case "×":
+          stack.push(a * b);
+          break;
+        case "÷":
+          stack.push(a / b);
+          break;
+      }
+    }
   }
-  return result;
+  return stack;
 }
 
 // prec : 연산자와 괄호의 우선쉰위를 반환하는 함수
@@ -87,3 +105,22 @@ const prec = (op) => {
   }
   return 999;
 };
+
+// 괄호의 개수 비교를 해서 완벽한 괄호 식인지 확인한다.
+export function countbracket(text) {
+  let count_a = 0;
+  let count_b = 0;
+  let pos_1 = text.indexOf("(");
+  let pos_2 = text.indexOf(")");
+  while (pos_1 !== -1 || pos_2 !== -1) {
+    if (pos_1 !== -1) {
+      count_a++;
+    }
+    if (pos_2 !== -1) {
+      count_b++;
+    }
+    pos_1 = text.indexOf("(", pos_1 + 1);
+    pos_2 = text.indexOf(")", pos_2 + 1);
+  }
+  return count_b === count_a;
+}

@@ -2,7 +2,8 @@ import { StyleSheet, Text, View, Switch, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useState } from "react";
 import { Feather } from "@expo/vector-icons";
-import { postfix } from "./postfix_notation";
+import { postfix, countbracket } from "./postfix_notation";
+import Toast from "react-native-toast-message";
 
 const Calculator = () => {
   const [isEnabled, setIsEnabled] = useState(false);
@@ -10,9 +11,30 @@ const Calculator = () => {
 
   const [InputNum, setInpuNum] = useState("");
 
+  const showerrorToast = () => {
+    Toast.show({
+      type: "error",
+      text1: "잘못된 수식",
+      text2: "수식을 확인해주세요.",
+    });
+  };
+
+  const showNoneReadyToast = () => {
+    Toast.show({
+      type: "error",
+      text1: "아직 준비중입니다.",
+      text2: "금방 준비해드리겠습니다.",
+    });
+  };
+
   const Calculate = (f) => {
-    const result = postfix(f);
-    setInpuNum(result);
+    if (!InputNum === "" && countbracket(f)) {
+      const result = postfix(f);
+      setInpuNum(result);
+    } else if (InputNum === "") {
+    } else {
+      showerrorToast();
+    }
   };
 
   return (
@@ -77,7 +99,16 @@ const Calculator = () => {
                   flex: 1,
                   backgroundColor: "#4f473e",
                 }}
-                onPress={() => setInpuNum(InputNum + "(")}
+                onPress={() => {
+                  if (
+                    InputNum === "" ||
+                    isNaN(InputNum.charAt(InputNum.length - 1))
+                  ) {
+                    setInpuNum(InputNum + "(");
+                  } else {
+                    setInpuNum(InputNum + "×(");
+                  }
+                }}
               >
                 <Text style={{ color: "#a88e67", fontSize: 20 }}>(</Text>
               </TouchableOpacity>
@@ -87,7 +118,13 @@ const Calculator = () => {
                   flex: 1,
                   backgroundColor: "#4f473e",
                 }}
-                onPress={() => setInpuNum(InputNum + ")")}
+                onPress={() => {
+                  if (isNaN(InputNum.charAt(InputNum.length - 1))) {
+                    showerrorToast();
+                  } else {
+                    setInpuNum(InputNum + ")");
+                  }
+                }}
               >
                 <Text style={{ color: "#a88e67", fontSize: 20 }}>)</Text>
               </TouchableOpacity>
@@ -99,6 +136,7 @@ const Calculator = () => {
                   flex: 1,
                   backgroundColor: "#4f473e",
                 }}
+                onPress={() => showNoneReadyToast()}
               >
                 <Text style={{ color: "#a88e67", fontSize: 20 }}>√</Text>
               </TouchableOpacity>
@@ -108,6 +146,7 @@ const Calculator = () => {
                   flex: 1,
                   backgroundColor: "#4f473e",
                 }}
+                onPress={() => showNoneReadyToast()}
               >
                 <Text style={{ color: "#a88e67", fontSize: 20 }}>%</Text>
               </TouchableOpacity>
@@ -117,6 +156,7 @@ const Calculator = () => {
                   flex: 1,
                   backgroundColor: "#4f473e",
                 }}
+                onPress={() => showNoneReadyToast()}
               >
                 <Text style={{ color: "#a88e67", fontSize: 20 }}>±</Text>
               </TouchableOpacity>
@@ -265,6 +305,7 @@ const Calculator = () => {
           </View>
         </View>
       </View>
+      <Toast />
     </LinearGradient>
   );
 };
