@@ -8,43 +8,73 @@ import {
 import { Entypo } from "@expo/vector-icons";
 import { useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import styled from "styled-components/native";
+import { useAccount } from "./AccountAxios";
+
+const TextInputs = ({ value, holder, setText, password, text }) => {
+  return (
+    <View>
+      <Text style={styles.texts}>{text}</Text>
+      <TextInput
+        value={value}
+        placeholder={holder}
+        style={styles.Inputs}
+        onChangeText={setText}
+        secureTextEntry={password}
+      />
+    </View>
+  );
+};
+
+const Screen = styled.View`
+  width: 100%;
+  height: 100%;
+`;
+
+const Header = ({ navigation }) => {
+  return (
+    <View
+      style={{
+        backgroundColor: "black",
+        height: 50,
+        alignItems: "center",
+        flexDirection: "row",
+      }}
+    >
+      <Text
+        style={{
+          color: "white",
+          fontWeight: "bold",
+          fontSize: 18,
+          paddingStart: 20,
+        }}
+      >
+        회원가입
+      </Text>
+      <TouchableOpacity
+        style={{ marginLeft: "65%" }}
+        onPress={navigation.goBack}
+      >
+        <Entypo name="cross" size={30} color="white" />
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 export default ({ navigation }) => {
+  const { Signup } = useAccount();
   const [LoginText, setLoginText] = useState("");
-  const [passwordText, setpasswordText] = useState("");
-  const [Checkpassword, setCheckpassword] = useState("");
+  const [passwordText, setPasswordText] = useState("");
+  const [CheckPassword, setCheckPassword] = useState("");
   const [nickname, setNickname] = useState("");
 
   return (
     <SafeAreaProvider>
       <SafeAreaView>
-        <View style={{ width: "100%", height: "100%" }}>
+        <Screen>
           {/*  헤더부분 나가기 버튼 및 회원가입 */}
-          <View
-            style={{
-              backgroundColor: "black",
-              height: 50,
-              alignItems: "center",
-              flexDirection: "row",
-            }}
-          >
-            <Text
-              style={{
-                color: "white",
-                fontWeight: "bold",
-                fontSize: 18,
-                paddingStart: 20,
-              }}
-            >
-              회원가입
-            </Text>
-            <TouchableOpacity
-              style={{ marginLeft: "65%" }}
-              onPress={navigation.goBack}
-            >
-              <Entypo name="cross" size={30} color="white" />
-            </TouchableOpacity>
-          </View>
+          <Header navigation={navigation} />
+
           <View style={{ paddingStart: 25 }}>
             {/*  회원가입 부분  */}
             <View>
@@ -58,55 +88,50 @@ export default ({ navigation }) => {
               >
                 임시 페이지
               </Text>
-              <Text style={styles.texts}>아이디</Text>
-              <TextInput
+
+              <TextInputs
+                setText={setLoginText}
                 value={LoginText}
-                placeholder={"아이디를 입력해주세요."}
-                style={styles.Inputs}
-                onChangeText={setLoginText}
+                password={false}
+                text={"아이디"}
+                holder={"아이디를 입력해주세요."}
               />
 
-              <Text style={styles.texts}>비밀번호</Text>
-              <TextInput
+              <TextInputs
+                setText={setPasswordText}
                 value={passwordText}
-                placeholder={"비밀번호를 입력해주세요."}
-                style={styles.Inputs}
-                onChangeText={setpasswordText}
-                secureTextEntry={true}
+                password={true}
+                text={"비밀번호"}
+                holder={"비밀번호를 입력해주세요."}
               />
 
-              <Text style={styles.texts}>비밀번호 확인</Text>
-              <TextInput
-                value={Checkpassword}
-                placeholder={"비밀번호 확인"}
-                style={styles.Inputs}
-                onChangeText={setCheckpassword}
-                secureTextEntry={true}
+              <TextInputs
+                setText={setCheckPassword}
+                value={CheckPassword}
+                password={true}
+                text={"비밀번호 확인"}
+                holder={"비밀번호 확인"}
               />
 
-              <Text style={styles.texts}>닉네임</Text>
-              <TextInput
+              <TextInputs
+                setText={setNickname}
                 value={nickname}
-                placeholder={"사용할 닉네임을 입력해주세요."}
-                onChangeText={setNickname}
-                style={styles.Inputs}
+                password={false}
+                text={"닉네임"}
+                holder={"사용할 닉네임을 입력해주세요."}
               />
             </View>
             {/*  회원가입 버튼  */}
             <TouchableOpacity
-              style={{
-                backgroundColor: "#BE271D",
-                borderRadius: 15,
-                width: "90%",
-                alignItems: "center",
-                justifyContent: "center",
-                height: 40,
-              }}
+              style={styles.SignupButton}
+              onPress={() =>
+                Signup(LoginText, passwordText, CheckPassword, nickname)
+              }
             >
               <Text style={{ color: "white", fontWeight: "bold" }}>다음</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </Screen>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -128,5 +153,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     paddingTop: 15,
     paddingBottom: 5,
+  },
+  SignupButton: {
+    backgroundColor: "#BE271D",
+    borderRadius: 15,
+    width: "90%",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 40,
   },
 });

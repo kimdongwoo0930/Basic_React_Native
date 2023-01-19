@@ -8,6 +8,51 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import styled from "styled-components/native";
+
+const TextInputs = ({ Text, setText, holder, password }) => {
+  return (
+    <TextInput
+      placeholderTextColor={"#535353"}
+      placeholder={holder}
+      value={Text}
+      style={styles.TextInputs}
+      onChangeText={setText}
+      cursorColor={"#DE5549"}
+      selectionColor={"#DE5549"}
+      autoCapitalize={"none"}
+      secureTextEntry={password}
+    />
+  );
+};
+
+const Header = styled.View`
+  align-items: center;
+  padding-top: 50px;
+  flex: 1;
+`;
+
+const Footer = styled.View`
+  justify-content: center;
+  width: 100%;
+  flex-direction: row;
+  align-items: center;
+  flex: 0.5;
+`;
+
+const Screen = styled.View`
+  width: 100%;
+  height: 100%;
+  background-color: #121212;
+  align-items: center;
+`;
+
+const Login = styled.View`
+  width: 100%;
+  align-items: center;
+  padding-top: 50px;
+  flex: 4;
+`;
 
 export default ({ navigation }) => {
   const [LoginText, setLoginText] = useState("");
@@ -16,22 +61,10 @@ export default ({ navigation }) => {
   return (
     <SafeAreaProvider>
       <SafeAreaView>
-        <View
-          style={{
-            width: "100%",
-            height: "100%",
-            backgroundColor: "#121212",
-            alignItems: "center",
-          }}
-        >
+        <Screen>
           {/*  아이콘및 글자  */}
 
-          <View
-            style={{
-              alignItems: "center",
-              paddingTop: 50,
-            }}
-          >
+          <Header>
             <Ionicons
               name="ios-alarm-outline"
               size={60}
@@ -44,56 +77,38 @@ export default ({ navigation }) => {
             >
               에브리타임
             </Text>
-          </View>
+          </Header>
 
           {/* 인풋창 및 로그인 버튼 */}
 
-          <View style={{ width: "100%", alignItems: "center", paddingTop: 50 }}>
-            <TextInput
-              placeholderTextColor={"#535353"}
-              placeholder={"아이디"}
-              value={LoginText}
-              style={styles.TextInputs}
-              onChangeText={setLoginText}
-              cursorColor={"#DE5549"}
-              selectionColor={"#DE5549"}
-              autoCapitalize={"none"}
+          <Login>
+            <TextInputs
+              Text={LoginText}
+              setText={setLoginText}
+              password={false}
+              holder={"아이디"}
             />
-            <TextInput
-              placeholderTextColor={"#535353"}
-              placeholder={"비밀번호"}
-              value={RegisterText}
-              style={styles.TextInputs}
-              onChangeText={setRegisterText}
-              cursorColor={"#DE5549"}
-              selectionColor={"#DE5549"}
-              autoCapitalize={"none"}
-              secureTextEntry={true}
+            <TextInputs
+              Text={RegisterText}
+              setText={setRegisterText}
+              password={true}
+              holder={"비밀번호"}
             />
-            <TouchableOpacity
-              style={{
-                backgroundColor: "#DE5549",
-                borderRadius: 30,
-                width: "80%",
-                height: 40,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
+
+            <TouchableOpacity style={styles.LoginButton}>
               <Text style={{ color: "black", fontWeight: "bold" }}>
                 에브리타임 로그인
               </Text>
             </TouchableOpacity>
-          </View>
 
-          {/* 아이디찾기 버튼 및 회원가입 */}
+            {/* 아이디찾기 버튼 및 회원가입 */}
 
-          <View style={{ alignItems: "center" }}>
             <TouchableOpacity style={{ marginTop: 20 }}>
               <Text style={{ color: "#595959", fontWeight: "bold" }}>
                 아이디/비밀번호 찾기
               </Text>
             </TouchableOpacity>
+
             <TouchableOpacity
               style={{ marginTop: 10 }}
               onPress={() => navigation.push("register")}
@@ -104,45 +119,25 @@ export default ({ navigation }) => {
                 회원가입
               </Text>
             </TouchableOpacity>
-          </View>
+          </Login>
 
           {/* 푸터 */}
 
-          <View
-            style={{ flexDirection: "row", alignItems: "center", top: "85%" }}
-          >
+          <Footer>
             <Text
-              style={{
-                color: "darkgray",
-                marginHorizontal: 10,
-                fontWeight: "bold",
-                fontSize: 12,
-              }}
+              style={[
+                {
+                  color: "darkgray",
+                },
+                styles.FooterText,
+              ]}
             >
               개인정보 처리방침
             </Text>
-            <Text
-              style={{
-                color: "gray",
-                marginHorizontal: 10,
-                fontWeight: "bold",
-                fontSize: 12,
-              }}
-            >
-              문의하기
-            </Text>
-            <Text
-              style={{
-                color: "gray",
-                marginHorizontal: 10,
-                fontWeight: "bold",
-                fontSize: 12,
-              }}
-            >
-              이용약관
-            </Text>
-          </View>
-        </View>
+            <Text style={styles.FooterText}>문의하기</Text>
+            <Text style={styles.FooterText}>이용약관</Text>
+          </Footer>
+        </Screen>
       </SafeAreaView>
     </SafeAreaProvider>
   );
@@ -157,5 +152,19 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingHorizontal: 20,
     color: "white",
+  },
+  FooterText: {
+    color: "gray",
+    marginHorizontal: 10,
+    fontWeight: "bold",
+    fontSize: 12,
+  },
+  LoginButton: {
+    backgroundColor: "#DE5549",
+    borderRadius: 30,
+    width: "80%",
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
