@@ -1,4 +1,7 @@
 import axios from "axios";
+import { useState } from "react";
+import Toast from "react-native-toast-message";
+import { useToast } from "./useToast";
 
 const CheckValidation = (Id, Pw, CheckPw, Nickname) => {
   // 맨앞글자는 영어 , 영어 숫자만 사용 가능
@@ -21,13 +24,14 @@ const CheckValidation = (Id, Pw, CheckPw, Nickname) => {
 };
 
 export const useAccount = () => {
-  const Signup = (Id, Pw, CheckPw, Nickname) => {
+  const { showToast } = useToast();
+  const [result, setResult] = useState({ msg: null, data: null });
+  const Signup = (Id, Pw, CheckPw, Nickname, navigation) => {
     const result = CheckValidation(Id, Pw, CheckPw, Nickname);
     if (result !== "Pass") {
+      setResult({ msg: result });
       console.log(result);
     } else {
-      console.log("성공");
-
       // 서버 통신 시작
       let SignUpData = {
         user_id: Id,
@@ -35,7 +39,6 @@ export const useAccount = () => {
         checked_password: CheckPw,
         nickname: Nickname,
       };
-      console.log(SignUpData);
 
       axios
         .post(
@@ -48,7 +51,11 @@ export const useAccount = () => {
           }
         )
         .then((resp) => {
-          console.log(resp.data);
+          setResult({ msg: resp.data.message, data: resp.data });
+          if (resp.data.message === "회원가입 성공") {
+            showToast();
+            navigation.goBack();
+          }
         })
         .catch((error) => {
           console.log(error);
@@ -56,5 +63,5 @@ export const useAccount = () => {
     }
   };
 
-  return { Signup };
+  return { Signup, result };
 };

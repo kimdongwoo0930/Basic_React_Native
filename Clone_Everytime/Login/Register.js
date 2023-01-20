@@ -11,10 +11,10 @@ import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import styled from "styled-components/native";
 import { useAccount } from "./AccountAxios";
 
-const TextInputs = ({ value, holder, setText, password, text }) => {
+const TextInputs = ({ value, holder, setText, password, text, hint }) => {
   return (
     <View>
-      <Text style={styles.texts}>{text}</Text>
+      <Text style={[styles.texts, {}]}>{text}</Text>
       <TextInput
         value={value}
         placeholder={holder}
@@ -22,6 +22,14 @@ const TextInputs = ({ value, holder, setText, password, text }) => {
         onChangeText={setText}
         secureTextEntry={password}
       />
+      <Text
+        style={[
+          styles.texts,
+          { paddingBottom: 5, fontSize: 10, paddingTop: 0 },
+        ]}
+      >
+        {hint}
+      </Text>
     </View>
   );
 };
@@ -62,7 +70,7 @@ const Header = ({ navigation }) => {
 };
 
 export default ({ navigation }) => {
-  const { Signup } = useAccount();
+  const { Signup, result } = useAccount();
   const [LoginText, setLoginText] = useState("");
   const [passwordText, setPasswordText] = useState("");
   const [CheckPassword, setCheckPassword] = useState("");
@@ -95,6 +103,7 @@ export default ({ navigation }) => {
                 password={false}
                 text={"아이디"}
                 holder={"아이디를 입력해주세요."}
+                hint={"영어와 숫자만 사용가능, 8자 ~ 12자 가능"}
               />
 
               <TextInputs
@@ -103,6 +112,9 @@ export default ({ navigation }) => {
                 password={true}
                 text={"비밀번호"}
                 holder={"비밀번호를 입력해주세요."}
+                hint={
+                  "하나 이상의 대소문자 및 하나의 숫자, 특수문자 모두 필요, 8자 ~ 20자 가능"
+                }
               />
 
               <TextInputs
@@ -119,13 +131,21 @@ export default ({ navigation }) => {
                 password={false}
                 text={"닉네임"}
                 holder={"사용할 닉네임을 입력해주세요."}
+                hint={"2자 ~ 15자 가능"}
               />
             </View>
+            <Text style={styles.texts}>{result.msg}</Text>
             {/*  회원가입 버튼  */}
             <TouchableOpacity
               style={styles.SignupButton}
               onPress={() =>
-                Signup(LoginText, passwordText, CheckPassword, nickname)
+                Signup(
+                  LoginText,
+                  passwordText,
+                  CheckPassword,
+                  nickname,
+                  navigation
+                )
               }
             >
               <Text style={{ color: "white", fontWeight: "bold" }}>다음</Text>
@@ -144,17 +164,17 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 15,
     backgroundColor: "#f8f8f8",
-    marginBottom: 20,
   },
   texts: {
     paddingLeft: 10,
     fontSize: 13,
     color: "#757575",
     fontWeight: "bold",
-    paddingTop: 15,
     paddingBottom: 5,
+    paddingTop: 15,
   },
   SignupButton: {
+    marginTop: 30,
     backgroundColor: "#BE271D",
     borderRadius: 15,
     width: "90%",
